@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, type FormEvent } from 'react';
 import { FiTrash } from 'react-icons/fi';
 import { api } from './services/api';
 
@@ -13,6 +13,8 @@ interface CustomerProps {
 export default function App() {
 
   const [customers, setCustomers] = useState<CustomerProps[]>([]);
+  const nameRef = useRef<HTMLInputElement | null>(null);
+  const emailRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     loadCustomers();
@@ -22,18 +24,36 @@ export default function App() {
     const response = await api.get("/customers");
     setCustomers(response.data);
   }
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    if (!nameRef.current?.value || !emailRef.current?.value) return;
+
+    const response = await api.post("/customer", {
+      name: nameRef.current?.value,
+      email: emailRef.current?.value
+    })
+
+    console.log(response.data);
+  }
+
   return (
     <div>
       <h1 className="w-full min-h-screen bg-gray-900 flex justify-center px-4">
         <main className="my-10 w-full md:max-w-2xl">
           <h1 className="text-4xl font-medium text-white">Customers</h1>
 
-          <form className="flex flex-col my-6">
+          <form className="flex flex-col my-6" onSubmit={handleSubmit}>
             <label className="font-medium text-white">Name:</label>
-            <input type="text" placeholder="Type your full name..." className="w-full mb-5 p-2 rounded bg-white"/>
+            <input type="text" placeholder="Type your full name..." className="w-full mb-5 p-2 rounded bg-white"
+            ref={nameRef}
+            />
 
             <label className="font-medium text-white">E-mail:</label>
-            <input type="text" placeholder="Type your e-mail..." className="w-full mb-5 p-2 rounded bg-white"/>
+            <input type="text" placeholder="Type your e-mail..." className="w-full mb-5 p-2 rounded bg-white"
+            ref={emailRef}
+            />
 
             <input 
               type="submit" 
