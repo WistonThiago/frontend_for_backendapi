@@ -34,8 +34,8 @@ export default function App() {
       name: nameRef.current?.value,
       email: emailRef.current?.value
     })
-
-    console.log(response.data);
+    
+    setCustomers(allCostumers => [...allCostumers, response.data])
   }
 
   return (
