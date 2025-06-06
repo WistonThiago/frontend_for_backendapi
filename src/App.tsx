@@ -36,6 +36,10 @@ export default function App() {
     })
 
     setCustomers(allCostumers => [...allCostumers, response.data])
+
+    nameRef.current.value = "";
+    emailRef.current.value = "";
+
   }
 
   async function handleDelete(id: string) {
